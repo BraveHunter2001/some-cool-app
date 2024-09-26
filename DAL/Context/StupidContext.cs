@@ -4,6 +4,18 @@ namespace DAL.Context;
 
 public static class StupidContext
 {
+    public static List<Survey> Surveys =
+    [
+        new() { Id = 1, Questions = Questions }
+    ];
+
+    public static List<Result> Results = new();
+
+    public static List<Interview> Interviews =
+    [
+        new() { Id = 1, SurveyId = 1 }
+    ];
+
     public static List<Question> Questions =
     [
         new Question()

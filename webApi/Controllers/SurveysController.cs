@@ -7,10 +7,10 @@ namespace some_cool_app.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class SurveysController(IQuestionsService questionsService) : ControllerBase
+public class SurveysController(IQuestionsService questionsService, ISurveysService surveysService) : ControllerBase
 {
     [HttpGet("{surveyId}/{number?}")]
-    public IActionResult GetQuestion(int surveyId, int? number)
+    public IActionResult GetQuestion([FromRoute] int surveyId, [FromRoute] int? number)
     {
         var question = questionsService.GetQuestionByNumberInSurvey(surveyId, number ?? 1);
 
@@ -21,9 +21,9 @@ public class SurveysController(IQuestionsService questionsService) : ControllerB
     }
 
     [HttpPost("{surveyId}/next")]
-    public IActionResult MoveOnNextQuestion(ResultAnswerModel resultAnswerModel)
+    public IActionResult MoveOnNextQuestion([FromRoute] int surveyId, [FromBody] ResultAnswerModel resultAnswerModel)
     {
-
-        return Ok("id");
+        var nextQuestionId = surveysService.MoveOnNextQuestion(resultAnswerModel.InterviewId, surveyId, resultAnswerModel.QuestionId, resultAnswerModel.AnswerId);
+        return Ok(nextQuestionId);
     }
 }
