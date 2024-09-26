@@ -1,29 +1,25 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Services;
 using some_cool_app.Models;
-using some_cool_app.ViewModels;
 
 namespace some_cool_app.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class SurveysController(IQuestionsService questionsService, ISurveysService surveysService) : ControllerBase
+public class SurveysController(ISurveysService surveysService, IInterviewService interviewService) : ControllerBase
 {
-    [HttpGet("{surveyId}/{number?}")]
-    public IActionResult GetQuestion([FromRoute] int surveyId, [FromRoute] int? number)
-    {
-        var question = questionsService.GetQuestionByNumberInSurvey(surveyId, number ?? 1);
-
-        if (question is null)
-            return NotFound("This question doesn't exist");
-
-        return Ok(new QuestionViewModel(question));
-    }
-
     [HttpPost("{surveyId}/next")]
     public IActionResult MoveOnNextQuestion([FromRoute] int surveyId, [FromBody] ResultAnswerModel resultAnswerModel)
     {
-        var nextQuestionId = surveysService.MoveOnNextQuestion(resultAnswerModel.InterviewId, surveyId, resultAnswerModel.QuestionId, resultAnswerModel.AnswerId);
+        var survey = surveysService.GetSurveyById(surveyId);
+        if (survey is null)
+            return NotFound("Not found survey");
+
+        var interview = interviewService.GetById(resultAnswerModel.InterviewId);
+        if (interview is null)
+            return NotFound("Not found interview");
+
+        var nextQuestionId = surveysService.MoveOnNextQuestion(survey, interview, resultAnswerModel.QuestionId, resultAnswerModel.AnswerId);
         return Ok(nextQuestionId);
     }
 }

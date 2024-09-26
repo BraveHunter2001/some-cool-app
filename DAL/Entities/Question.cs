@@ -4,7 +4,7 @@ public class Question
 {
     public int Id { get; set; }
     public string Message { get; set; }
-    public int NumberInServery { get; set; }
+    public int NumberInSurvey { get; set; }
 
     public List<Answer> Answers { get; set; }
 

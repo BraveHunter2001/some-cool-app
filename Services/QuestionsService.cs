@@ -5,10 +5,10 @@ namespace Services;
 
 public interface IQuestionsService
 {
-    Question GetQuestionByNumberInSurvey(int surveyId, int number);
+    Question GetQuestionById(int questionId);
 }
 
 internal class QuestionsService(IQuestionsRepository questionsRepository) : IQuestionsService
 {
-    public Question GetQuestionByNumberInSurvey(int surveyId, int number) => questionsRepository.GetQuestionByNumberInSurvey(surveyId, number);
+    public Question GetQuestionById(int questionId) => questionsRepository.GetQuestionById(questionId);
 }

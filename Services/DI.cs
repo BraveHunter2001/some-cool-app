@@ -8,5 +8,6 @@ public static class DI
     {
         services.AddScoped<IQuestionsService, QuestionsService>();
         services.AddScoped<ISurveysService, SurveysService>();
+        services.AddScoped<IInterviewService, InterviewService>();
     }
 }

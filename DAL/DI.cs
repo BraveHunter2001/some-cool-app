@@ -10,5 +10,6 @@ public static class DI
         services.AddScoped<IQuestionsRepository, QuestionsRepository>();
         services.AddScoped<IResultsRepository, ResultsRepository>();
         services.AddScoped<IInterviewRepository, InterviewRepository>();
+        services.AddScoped<ISurveysRepository, SurveysRepository>();
     }
 }

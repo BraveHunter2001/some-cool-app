@@ -5,15 +5,14 @@ namespace DAL.Repositories;
 
 public interface IQuestionsRepository
 {
-    Question GetQuestionByNumberInSurvey(int surveyId, int number);
+    Question GetQuestionById(int questionId);
 }
 
 internal class QuestionsRepository : IQuestionsRepository
 {
-    public Question GetQuestionByNumberInSurvey(int surveyId, int number)
+    public Question GetQuestionById(int questionId)
     {
-        var question = StupidContext.Questions.FirstOrDefault(q => q.SurveyId == surveyId && q.NumberInServery == number);
-
+        var question = StupidContext.Questions.FirstOrDefault(q => q.Id == questionId);
         return question;
     }
 }

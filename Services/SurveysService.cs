@@ -5,38 +5,31 @@ namespace Services;
 
 public interface ISurveysService
 {
-    public int MoveOnNextQuestion(int interviewId, int surveyId, int questionId, int selectedAnswerId);
+    public int? MoveOnNextQuestion(Survey survey, Interview interview, int questionId, int selectedAnswerId);
+    public Survey? GetSurveyById(int id);
 }
 
 internal class SurveysService(
     IResultsRepository resultsRepository,
-    IInterviewRepository interviewRepository,
-    IQuestionsRepository questionsRepository
+    ISurveysRepository surveysRepository
 ) : ISurveysService
 {
-    public int MoveOnNextQuestion(int interviewId, int surveyId, int questionId, int selectedAnswerId)
+    public int? MoveOnNextQuestion(Survey survey, Interview interview, int questionId, int selectedAnswerId)
     {
         // сохраняем ответ
-        resultsRepository.AddResult(new Result(surveyId, questionId, selectedAnswerId));
+        resultsRepository.AddResult(new Result(survey.Id, questionId, selectedAnswerId));
 
-        // переключаем на следующий вопрос
-        var interview = interviewRepository.GetById(interviewId);
-        bool hasInterview = interview is not null;
+        var numberInSurvey = interview.LastSelectedQuestion?.NumberInSurvey ?? 1;
 
-        var currentNumberInServery = hasInterview && interview.LastSelectedQuestion is not null
-            ? interview.LastSelectedQuestion.NumberInServery
-            : 1;
-
-        var nextQuestion = questionsRepository.GetQuestionByNumberInSurvey(surveyId, currentNumberInServery + 1);
-
-        if (!hasInterview)
+        var questionDictionary = survey.QuestionsByNumber;
+        if (questionDictionary?.TryGetValue(numberInSurvey + 1, out var nextQuestion) ?? false)
         {
-            interview = new Interview() { SurveyId = surveyId, LastSelectedQuestion = nextQuestion };
-            interviewRepository.AddInterview(interview);
+            interview.LastSelectedQuestion = nextQuestion;
             return nextQuestion.Id;
         }
 
-        interview.LastSelectedQuestion = nextQuestion;
-        return nextQuestion.Id;
+        return null;
     }
+
+    public Survey? GetSurveyById(int id) => surveysRepository.GetSurveyById(id);
 }
