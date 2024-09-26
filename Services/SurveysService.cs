@@ -5,30 +5,33 @@ namespace Services;
 
 public interface ISurveysService
 {
-    public int? MoveOnNextQuestion(Survey survey, Interview interview, int questionId, int selectedAnswerId);
+    public int? MoveOnNextQuestion(Survey survey, Interview interview, Question question, int selectedAnswerId);
     public Survey? GetSurveyById(int id);
 }
 
 internal class SurveysService(
     IResultsRepository resultsRepository,
-    ISurveysRepository surveysRepository
+    ISurveysRepository surveysRepository,
+    IInterviewRepository interviewRepository
 ) : ISurveysService
 {
-    public int? MoveOnNextQuestion(Survey survey, Interview interview, int questionId, int selectedAnswerId)
+    public int? MoveOnNextQuestion(Survey survey, Interview interview, Question question, int selectedAnswerId)
     {
-        // сохраняем ответ
-        resultsRepository.AddResult(new Result(survey.Id, questionId, selectedAnswerId));
-
-        var numberInSurvey = interview.LastSelectedQuestion?.NumberInSurvey ?? 1;
-
-        var questionDictionary = survey.QuestionsByNumber;
-        if (questionDictionary?.TryGetValue(numberInSurvey + 1, out var nextQuestion) ?? false)
+        var result = resultsRepository.GetResult(survey.Id, interview.Id, question.Id);
+        if (result == null)
+            resultsRepository.AddResult(new Result(survey.Id, interview.Id, question.Id, selectedAnswerId));
+        else
         {
-            interview.LastSelectedQuestion = nextQuestion;
-            return nextQuestion.Id;
+            result.SelectedAnswerId = selectedAnswerId;
+            resultsRepository.UpdateResult(result);
         }
 
-        return null;
+        int? nextQuestionId = question.NextQuestionId;
+
+        interview.CurrentQuestionId = nextQuestionId;
+        interviewRepository.Update(interview);
+
+        return nextQuestionId;
     }
 
     public Survey? GetSurveyById(int id) => surveysRepository.GetSurveyById(id);

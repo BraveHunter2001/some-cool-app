@@ -8,7 +8,7 @@ namespace some_cool_app.Controllers;
 [ApiController]
 public class QuestionsController(IQuestionsService questionsService) : ControllerBase
 {
-    [HttpGet("{surveyId}/{questionId}")]
+    [HttpGet("{questionId}")]
     public IActionResult GetQuestion([FromRoute] int questionId)
     {
         var question = questionsService.GetQuestionById(questionId);

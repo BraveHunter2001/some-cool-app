@@ -6,7 +6,7 @@ namespace some_cool_app.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class SurveysController(ISurveysService surveysService, IInterviewService interviewService) : ControllerBase
+public class SurveysController(ISurveysService surveysService, IInterviewService interviewService, IQuestionsService questionsService) : ControllerBase
 {
     [HttpPost("{surveyId}/next")]
     public IActionResult MoveOnNextQuestion([FromRoute] int surveyId, [FromBody] ResultAnswerModel resultAnswerModel)
@@ -19,7 +19,11 @@ public class SurveysController(ISurveysService surveysService, IInterviewService
         if (interview is null)
             return NotFound("Not found interview");
 
-        var nextQuestionId = surveysService.MoveOnNextQuestion(survey, interview, resultAnswerModel.QuestionId, resultAnswerModel.AnswerId);
-        return Ok(nextQuestionId);
+        var question = questionsService.GetQuestionById(resultAnswerModel.QuestionId);
+        if (question is null)
+            return NotFound("Not found question");
+
+        var nextQuestionId = surveysService.MoveOnNextQuestion(survey, interview, question, resultAnswerModel.AnswerId);
+        return Ok(nextQuestionId.HasValue ? nextQuestionId : "No further questions");
     }
 }
