@@ -1,4 +1,5 @@
-﻿using DAL.Repositories;
+﻿using DAL.Context;
+using DAL.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -8,7 +9,7 @@ public static class DI
 {
     public static void AddDAL(this IServiceCollection services, string connectionString)
     {
-        services.AddDbContext<Context.SomeCoolContext>(
+        services.AddDbContext<SomeCoolContext>(
             opt => opt.UseNpgsql(connectionString)
         );
 

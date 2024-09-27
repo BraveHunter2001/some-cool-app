@@ -1,6 +1,8 @@
-﻿namespace DAL.Repositories;
+﻿using DAL.Context;
 
-internal abstract class Repository<TEntity>(Context.SomeCoolContext context) where TEntity : class
+namespace DAL.Repositories;
+
+internal abstract class Repository<TEntity>(SomeCoolContext context) where TEntity : class
 {
     internal void Create(TEntity entity)
     {

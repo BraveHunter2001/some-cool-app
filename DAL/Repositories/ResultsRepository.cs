@@ -1,5 +1,6 @@
-﻿using DAL.Entities;
-using SomeCoolContext = DAL.Context.SomeCoolContext;
+﻿using DAL.Context;
+using DAL.Entities;
+
 
 namespace DAL.Repositories;
 
