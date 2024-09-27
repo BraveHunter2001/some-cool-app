@@ -21,5 +21,22 @@ services:
     networks:
         - dev
 
+  webapi:
+    container_name: webapi
+    image: ${DOCKER_REGISTRY-}webapi
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:80 
+    ports:
+      - "5000:80"
+    networks:
+        - dev
+    depends_on:
+      postgres:
+        condition: service_started
+
 volumes:
     postgres:
