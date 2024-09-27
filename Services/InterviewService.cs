@@ -5,10 +5,10 @@ namespace Services;
 
 public interface IInterviewService
 {
-    Interview? GetById(int id);
+    Interview? GetInterviewById(int id);
 }
 
 internal class InterviewService(IInterviewRepository interviewRepository) : IInterviewService
 {
-    public Interview? GetById(int id) => interviewRepository.GetById(id);
+    public Interview? GetInterviewById(int id) => interviewRepository.GetInterviewById(id);
 }

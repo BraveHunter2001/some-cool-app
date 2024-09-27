@@ -10,6 +10,6 @@ public class QuestionViewModel
     public QuestionViewModel(Question question)
     {
         Message = question.Message;
-        Answers = question.Answers.ConvertAll(a => new AnswerViewModel(a));
+        Answers = question.Answers?.ConvertAll(a => new AnswerViewModel(a));
     }
 }

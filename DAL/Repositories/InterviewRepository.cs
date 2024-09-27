@@ -1,25 +1,17 @@
-﻿using DAL.Context;
-using DAL.Entities;
+﻿using DAL.Entities;
+using SomeCoolContext = DAL.Context.SomeCoolContext;
 
 namespace DAL.Repositories;
 
 public interface IInterviewRepository
 {
-    Interview? GetById(int id);
+    Interview? GetInterviewById(int id);
     void Update(Interview interview);
 }
 
-internal class InterviewRepository : IInterviewRepository
+internal class InterviewRepository(SomeCoolContext context) : Repository<Interview>(context), IInterviewRepository
 {
-    public Interview? GetById(int id)
-    {
-        var interview = StupidContext.Interviews.FirstOrDefault(i => i.Id == id);
+    public Interview? GetInterviewById(int id) => GetById(id);
 
-        return interview;
-    }
-
-    public void Update(Interview interview)
-    {
-        
-    }
+    public void Update(Interview interview) => Insert(interview);
 }

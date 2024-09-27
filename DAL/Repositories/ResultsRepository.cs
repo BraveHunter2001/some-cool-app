@@ -1,5 +1,5 @@
-﻿using DAL.Context;
-using DAL.Entities;
+﻿using DAL.Entities;
+using SomeCoolContext = DAL.Context.SomeCoolContext;
 
 namespace DAL.Repositories;
 
@@ -10,19 +10,14 @@ public interface IResultsRepository
     Result? GetResult(int surveyId, int interviewId, int questionId);
 }
 
-internal class ResultsRepository : IResultsRepository
+internal class ResultsRepository(SomeCoolContext context) : Repository<Result>(context), IResultsRepository
 {
-    public void AddResult(Result result)
-    {
-        StupidContext.Results.Add(result);
-    }
+    public void AddResult(Result result) => Create(result);
 
-    public void UpdateResult(Result result)
-    {
-    }
+    public void UpdateResult(Result result) => Insert(result);
 
     public Result? GetResult(int surveyId, int interviewId, int questionId)
-        => StupidContext.Results
+        => context.Results
             .FirstOrDefault(r => r.SurveyId == surveyId
                                  && r.InterviewId == interviewId
                                  && r.QuestionId == questionId

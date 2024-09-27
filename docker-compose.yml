@@ -1,0 +1,25 @@
+version: '3.4'
+
+networks:
+  dev:
+    driver: bridge
+
+services:
+  postgres:
+    container_name: postgres_container
+    image: 'postgres:latest'
+    environment:
+      POSTGRES_USER: pguser
+      POSTGRES_PASSWORD: pgadmin
+      PGDATA: /data/postgres
+      POSTGRES_DB: someCool
+    volumes:
+       - postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    restart: always
+    networks:
+        - dev
+
+volumes:
+    postgres:
